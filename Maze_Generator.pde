@@ -13,7 +13,7 @@ int STARTING_NODE_Y = (int) Math.floor( GRIDS / 2 ); // Y position ( Y axis = 0 
 // Display control
 boolean DISPLAY_STACK          = true; // Display all cells in the stacks
 boolean DISPLAY_ACCESSED_CELLS = true; // Display all cells that have been accessed
-boolean DISPLAY_SOLUTION       = false; // Display the solution to the maze
+boolean DISPLAY_SOLUTION       = true; // Display the solution to the maze
 
 // Display constants
 int BACKGROUND_COLOR    = 0xFF333333; // HEX Color Code for the background
@@ -27,6 +27,8 @@ int SOLVE_PATH_COLOR    = 0xFFC8FF69; // HEX Color Code for the solution's path
 int BORDER_STROKE     = 3;  // Stroke for the border
 int SOLVE_PATH_WIDTH  = 10; // Line width = SOLVE_PATH_WIDTH% of CELL_DIMENSION
 
+// Saved variable
+boolean isSaved = false;
 
 // Data storage
 ArrayList<Cell> cells = new ArrayList<Cell>(); // Stores cell positions in a 1D array
@@ -72,8 +74,6 @@ void draw() {
 /** Renders all the cells
  */
 void drawCells() {
-  if ( traversedNodes.size() == 1 && DISPLAY_SOLUTION )
-    drawSolution( solvePath, SOLVE_PATH_COLOR );
   if ( traversedNodes.size() != 1 && DISPLAY_ACCESSED_CELLS )
     drawAccessedCells();
   if ( DISPLAY_STACK )
@@ -175,7 +175,14 @@ void update() {
 
     currentDistance--;
   } else { // If the maze is done rendering
-    save("maze.jpg"); // Saves image to program folder
+    if ( !isSaved ) {
+      save("maze.jpg"); // Saves image to program folder
+      if ( traversedNodes.size() == 1 && DISPLAY_SOLUTION ) {
+        drawSolution( solvePath, SOLVE_PATH_COLOR );
+        save("maze solution.jpg");
+      }
+      isSaved = true;
+    }
   }
 }
 
